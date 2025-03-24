@@ -2,15 +2,16 @@
 
 ---
 
-### **NAME:**  
-### **DEPARTMENT:**  
-### **ROLL NO:**  
-### **DATE OF EXPERIMENT:**  
+### **NAME:R.Prabanjan**  
+### **DEPARTMENT:AIDS**  
+### **ROLL NO:212224230198**  
+### **DATE OF EXPERIMENT:24/03/2025**  
 
 ---
 
 ## **AIM:**  
 To interface an **MPU6050 6-Axis Accelerometer & Gyroscope Sensor** with the **Raspberry Pi Pico** and display the sensor readings using MicroPython.
+
 
 ---
 
@@ -53,7 +54,8 @@ The **accelerometer** measures linear acceleration in **X, Y, Z axes**, while th
 
 ---
 
-## **CIRCUIT DIAGRAM:**  
+## **CIRCUIT DIAGRAM:** 
+![Screenshot 2025-03-10 115048](https://github.com/user-attachments/assets/ee80b2e1-4ade-4d02-a68d-6400811d689a)
 ### **Connections:**  
 
 | MPU6050 Pin | Raspberry Pi Pico Pin |
@@ -70,7 +72,7 @@ The **accelerometer** measures linear acceleration in **X, Y, Z axes**, while th
 from machine import Pin, I2C
 import utime
 
-# MPU6050 I2C address
+# MPU6050 I2C Address
 MPU6050_ADDR = 0x68
 
 # MPU6050 Registers
@@ -78,39 +80,37 @@ PWR_MGMT_1 = 0x6B
 ACCEL_XOUT_H = 0x3B
 GYRO_XOUT_H = 0x43
 
-# Initialize I2C
-sda = Pin(20)  # Define your SDA pin
-scl = Pin(21)  # Define your SCL pin
-i2c = I2C(1, scl=scl, sda=sda, freq=400000)  # Use I2C1
+# Initialize I2C on Raspberry Pi Pico (GPIO 0 and GPIO 1)
+i2c = I2C(0, scl=Pin(1), sda=Pin(0), freq=400000)  # I2C0 with 400kHz frequency
 
 def mpu6050_init():
+    """Initialize MPU6050 by waking it up from sleep mode."""
     i2c.writeto_mem(MPU6050_ADDR, PWR_MGMT_1, b'\x00')  # Wake up MPU6050
 
 def read_raw_data(reg):
-    data = i2c.readfrom_mem(MPU6050_ADDR, reg, 2)
+    """Read 2 bytes of raw data from the given register."""
+    data = i2c.readfrom_mem(MPU6050_ADDR, reg, 2)  # Read 2 bytes
     value = (data[0] << 8) | data[1]  # Combine high and low bytes
-    if value > 32767:
-        value -= 65536  # Convert to signed 16-bit
+    if value > 32767:  # Convert to signed 16-bit integer
+        value -= 65536
     return value
-
-def get_sensor_data():
-    accel_x = read_raw_data(ACCEL_XOUT_H) / 16384.0  # Convert to g
-    accel_y = read_raw_data(ACCEL_XOUT_H + 2) / 16384.0
-    accel_z = read_raw_data(ACCEL_XOUT_H + 4) / 16384.0
-    
-    gyro_x = read_raw_data(GYRO_XOUT_H) / 131.0  # Convert to deg/s
-    gyro_y = read_raw_data(GYRO_XOUT_H + 2) / 131.0
-    gyro_z = read_raw_data(GYRO_XOUT_H + 4) / 131.0
-    
-    return (accel_x, accel_y, accel_z, gyro_x, gyro_y, gyro_z)
 
 # Initialize MPU6050
 mpu6050_init()
 
+# Read and display Accelerometer and Gyroscope data
 while True:
-    ax, ay, az, gx, gy, gz = get_sensor_data()
-    print(f"Accel: X={ax:.2f}g, Y={ay:.2f}g, Z={az:.2f}g | Gyro: X={gx:.2f}°/s, Y={gy:.2f}°/s, Z={gz:.2f}°/s")
-    utime.sleep(1)
+    ax = read_raw_data(ACCEL_XOUT_H)/16384.0
+    ay = read_raw_data(ACCEL_XOUT_H + 2)/16384.0
+    az = read_raw_data(ACCEL_XOUT_H + 4)/16384.0
+
+    gx = read_raw_data(GYRO_XOUT_H)/131.0
+    gy = read_raw_data(GYRO_XOUT_H + 2)/131.0
+    gz = read_raw_data(GYRO_XOUT_H + 4)/131.0
+
+    print(f"Accel: X={ax}, Y={ay}, Z={az} | Gyro: X={gx}, Y={gy}, Z={gz}")
+
+    utime.sleep(10)  # Wait for 1 second before reading again
 ```
 
 ---
