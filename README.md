@@ -117,7 +117,13 @@ while True:
 
 ## **OUTPUT:**  
 When the above program is executed, the output on the serial monitor will display real-time acceleration and gyroscope values, such as:
+![IMG-20250324-WA0007](https://github.com/user-attachments/assets/dd6fec64-43da-4c79-8270-c73ba64adf5d)
+![IMG-20250324-WA0006](https://github.com/user-attachments/assets/72a5d4a6-b7f5-4180-be33-27de110d43fc)
+![IMG-20250324-WA0009](https://github.com/user-attachments/assets/662bca25-1b12-4136-bcee-138ca2a1c83d)
+![IMG-20250324-WA0008](https://github.com/user-attachments/assets/7c42bb52-fc81-4a31-92fe-345188182739)
+
 ```
+
 Accel: X=0.02g, Y=-0.01g, Z=1.00g | Gyro: X=0.05°/s, Y=-0.02°/s, Z=0.01°/s
 Accel: X=0.03g, Y=-0.02g, Z=1.01g | Gyro: X=0.06°/s, Y=-0.03°/s, Z=0.02°/s
 ...
